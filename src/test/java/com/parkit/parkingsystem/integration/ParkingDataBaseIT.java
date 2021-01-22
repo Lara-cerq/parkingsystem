@@ -64,8 +64,22 @@ public class ParkingDataBaseIT {
 		parkingService.processIncomingVehicle();
         Ticket ticket= ticketDAO.getTicket("ABCDEF");
 		int after = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
-		assertEquals(before, after - 1); // -> pour bike : assertEquals(before, after); car il y a deux places occupées
-											// alors que pour voiture il y a 3
+		assertEquals(before, after - 1); //3 places de parking pouvant etre occupées
+		//test that ticket is saved in DB
+		assertNotNull(ticket);
+	}
+	
+	@Test
+	public void testParkingABike() {
+		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+		int before = parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE); // -> donne le numero/nombre de place
+																			// disponible
+		parkingService.processIncomingVehicle();
+        Ticket ticket= ticketDAO.getTicket("ABCDEF");
+		int after = parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE);
+		assertEquals(before, after); // -> pour bike : assertEquals(before, after); car il y a deux places libres
+											// pouvant etre occupées
+		// test that ticket saved in DB
 		assertNotNull(ticket);
 	}
 
@@ -75,16 +89,16 @@ public class ParkingDataBaseIT {
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.processExitingVehicle();
 		Ticket ticket= ticketDAO.getTicket("ABCDEF");
+		// verify that fare is savend in DB
 		double price= ticket.getPrice();
-		assertEquals(1.5, Math.round(price*100)/100.0); // test to verify that fare is saved in DB
+		assertEquals(1.5, Math.round(price*100)/100.0);
+		// verify that outTime is saved in DB
 		SimpleDateFormat dateFormat = new SimpleDateFormat();
 		Date date= new Date();		
 		String outTimebefore= dateFormat.format(date);
 		Date outTime=ticket.getOutTime();
 		String outTimeAfter= dateFormat.format(outTime);
-		assertEquals(outTimebefore, outTimeAfter); // -> test to verify that ouTime is save in DB
-//		assertNotNull(outTime); //test to verify that ouTime is save in DB
-
+		assertEquals(outTimebefore, outTimeAfter);
 	}
 
 }

@@ -16,16 +16,16 @@ public class FareCalculatorService {
 
 		double duration = (outHour - inHour) / (1000 * 60 * 60.0);
 
-		TicketDAO ticketDAO = new TicketDAO();
-
-		String vehicleRegNumber = ticket.getVehicleRegNumber();
-
-		Ticket ticketDB = ticketDAO.getTicket(vehicleRegNumber);
+//		TicketDAO ticketDAO = new TicketDAO();
+//
+//		String vehicleRegNumber = ticket.getVehicleRegNumber();
+//
+//		int ticketDB = ticketDAO.countVehiculeReg(vehicleRegNumber);
 
 		switch (ticket.getParkingSpot().getParkingType()) {
 		case CAR: {
 			if (duration > 0.5) {
-//				if (ticket.getVehicleRegNumber().equals(ticketDB.getVehicleRegNumber())) { // -> voir comment faire pour
+//				if (ticketDB > 1) { // -> voir comment faire pour
 																							// comparer celui qu'on paye
 																							// et
 					// ceux deja presents dans DB
