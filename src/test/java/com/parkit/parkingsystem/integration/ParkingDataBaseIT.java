@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
@@ -75,11 +76,14 @@ public class ParkingDataBaseIT {
 		parkingService.processExitingVehicle();
 		Ticket ticket= ticketDAO.getTicket("ABCDEF");
 		double price= ticket.getPrice();
-		assertEquals(1.5, Math.round(price*100)/100.0);
-//		Date outTimebefore= new Date();
+		assertEquals(1.5, Math.round(price*100)/100.0); // test to verify that fare is saved in DB
+		SimpleDateFormat dateFormat = new SimpleDateFormat();
+		Date date= new Date();		
+		String outTimebefore= dateFormat.format(date);
 		Date outTime=ticket.getOutTime();
-//		assertEquals(outTimebefore, outTime); -> n'ont pas le meme format d'heure
-		assertNotNull(outTime);
+		String outTimeAfter= dateFormat.format(outTime);
+		assertEquals(outTimebefore, outTimeAfter); // -> test to verify that ouTime is save in DB
+//		assertNotNull(outTime); //test to verify that ouTime is save in DB
 
 	}
 
