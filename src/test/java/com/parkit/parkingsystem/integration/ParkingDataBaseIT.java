@@ -100,5 +100,18 @@ public class ParkingDataBaseIT {
 		String outTimeAfter= dateFormat.format(outTime);
 		assertEquals(outTimebefore, outTimeAfter);
 	}
+	
+	@Test
+	public void testReccurringCustomer() {
+		testParkingACar();
+		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+		Ticket ticket1= ticketDAO.getTicket("ABCDEF");
+		parkingService.processExitingVehicle();		
+		int nb= ticketDAO.countVehiculeReg(ticket1.getVehicleRegNumber());
+		Ticket ticket= ticketDAO.getTicket("ABCDEF");
+		parkingService.processExitingVehicle();
+		int nb2= ticketDAO.countVehiculeReg(ticket.getVehicleRegNumber());
+		assertEquals(nb, nb2 - 1);
+	}
 
 }

@@ -16,23 +16,19 @@ public class FareCalculatorService {
 
 		double duration = (outHour - inHour) / (1000 * 60 * 60.0);
 
-//		TicketDAO ticketDAO = new TicketDAO();
-//
-//		String vehicleRegNumber = ticket.getVehicleRegNumber();
-//
-//		int ticketDB = ticketDAO.countVehiculeReg(vehicleRegNumber);
+		TicketDAO ticketDAO = new TicketDAO();
+		int numberOfTimes = ticketDAO.countVehiculeReg(ticket.getVehicleRegNumber());
 
 		switch (ticket.getParkingSpot().getParkingType()) {
 		case CAR: {
 			if (duration > 0.5) {
-//				if (ticketDB > 1) { // -> voir comment faire pour
-																							// comparer celui qu'on paye
-																							// et
-					// ceux deja presents dans DB
-//					ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR - (duration * Fare.CAR_RATE_PER_HOUR * 0.05));
-//				} else {
+				if (numberOfTimes > 1) {
+					ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR - (duration * Fare.CAR_RATE_PER_HOUR * 0.05));
+					System.out.println(numberOfTimes);
+					System.out.println("Congratulations! You are a recurring customer, so you have a discount of 5%!!");
+				} else {
 					ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
-//				}
+				}
 			} else {
 				ticket.setPrice(0);
 			}
@@ -41,7 +37,12 @@ public class FareCalculatorService {
 		}
 		case BIKE: {
 			if (duration > 0.5) {
-				ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
+				if (numberOfTimes > 1) {
+					ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR - (duration * Fare.BIKE_RATE_PER_HOUR * 0.05));
+					System.out.println("Congratulations! You are a recurring customer, so you have a discount of 5%!!");
+				} else {
+					ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
+				}
 			} else {
 				ticket.setPrice(0);
 			}

@@ -90,13 +90,14 @@ public class TicketDAO {
 
 	public int countVehiculeReg(String vehicleRegNumber) {
 		Connection con = null;
+		int numberOfTimes = 0;
 		try {
 			con = dataBaseConfig.getConnection();
 			PreparedStatement ps = con.prepareStatement(DBConstants.COUNT_VEHICULEREG);
 			ps.setString(1, vehicleRegNumber);
 			ResultSet rs = ps.executeQuery();
 	    	rs.next();
-	    	int nombre = rs.getInt("nbTimes");
+	    	numberOfTimes=rs.getInt(1);
 	    	
 			dataBaseConfig.closeResultSet(rs);
 			dataBaseConfig.closePreparedStatement(ps);
@@ -104,7 +105,7 @@ public class TicketDAO {
 			logger.error("Error counting Vehicule Reg Number", ex);
 		} finally {
 			dataBaseConfig.closeConnection(con);
-			return 0;
+			return numberOfTimes;
 		}
 	}
 }
