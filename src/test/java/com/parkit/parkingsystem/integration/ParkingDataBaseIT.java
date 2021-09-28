@@ -103,15 +103,13 @@ public class ParkingDataBaseIT {
 	
 	@Test
 	public void testReccurringCustomer() {
-		testParkingACar();
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		Ticket ticket1= ticketDAO.getTicket("ABCDEF");
-		parkingService.processExitingVehicle();		
-		int nb= ticketDAO.countVehiculeReg(ticket1.getVehicleRegNumber());
-		Ticket ticket= ticketDAO.getTicket("ABCDEF");
+		parkingService.processIncomingVehicle();	//insertion de vehicule
 		parkingService.processExitingVehicle();
-		int nb2= ticketDAO.countVehiculeReg(ticket.getVehicleRegNumber());
-		assertEquals(nb, nb2 - 1);
+		parkingService.processIncomingVehicle();
+		int nb= ticketDAO.countVehiculeReg("ABCDEF");
+		
+		assertEquals(2, nb);
 	}
 
 }

@@ -2,7 +2,6 @@ package com.parkit.parkingsystem;
 
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.constants.ParkingType;
-import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.FareCalculatorService;
@@ -18,7 +17,7 @@ public class FareCalculatorServiceTest {
 
 	private static FareCalculatorService fareCalculatorService;
 	private Ticket ticket;
-	private TicketDAO ticketDAO;
+	private Ticket ticket2;
 
 	@BeforeAll
 	private static void setUp() {
@@ -28,6 +27,7 @@ public class FareCalculatorServiceTest {
 	@BeforeEach
 	private void setUpPerTest() {
 		ticket = new Ticket();
+		ticket2= new Ticket();
 	}
 
 	@Test
@@ -162,7 +162,7 @@ public class FareCalculatorServiceTest {
 																			// parking fare per hour
 		Date outTime = new Date();
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
-
+		
 		ticket.setInTime(inTime);
 		ticket.setOutTime(outTime);
 		ticket.setParkingSpot(parkingSpot);
@@ -176,13 +176,19 @@ public class FareCalculatorServiceTest {
 		inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));
 		Date outTime = new Date();
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
-	 
+		ParkingSpot parkingSpot2 = new ParkingSpot(2, ParkingType.CAR, false);
 		ticket.setInTime(inTime);
 		ticket.setOutTime(outTime);
 		ticket.setParkingSpot(parkingSpot);
-		fareCalculatorService.calculateFare(ticket);
-		assertEquals((1 * Fare.CAR_RATE_PER_HOUR) - (1 * Fare.CAR_RATE_PER_HOUR * 0.05), ticket.getPrice()); 
-	}
+		ticket2.setInTime(inTime);
+		ticket2.setOutTime(outTime);
+		ticket2.setParkingSpot(parkingSpot2);
+		double duration = (outTime.getTime() - inTime.getTime()) / (1000 * 60 * 60.0);
+		ticket2.setPrice(fareCalculatorService.calculateFareWithDiscount(ticket2));
+//		fareCalculatorService.calculateFare(ticket);
+			assertEquals((duration * Fare.CAR_RATE_PER_HOUR) - (duration * Fare.CAR_RATE_PER_HOUR * 0.05), ticket2.getPrice()); 
+		}
+//		assertEquals((1 * Fare.CAR_RATE_PER_HOUR) - (1 * Fare.CAR_RATE_PER_HOUR * 0.05), ticket.getPrice()); 
 
 	@Test
 	public void calculateFareBikeRecurringCustomer() {
@@ -195,6 +201,8 @@ public class FareCalculatorServiceTest {
 		ticket.setOutTime(outTime);
 		ticket.setParkingSpot(parkingSpot);
 		fareCalculatorService.calculateFare(ticket);
-		assertEquals((1 * Fare.BIKE_RATE_PER_HOUR) - (1 * Fare.BIKE_RATE_PER_HOUR * 0.05), ticket.getPrice());
+		double duration = (outTime.getTime() - inTime.getTime()) / (1000 * 60 * 60.0);
+		ticket.setPrice(fareCalculatorService.calculateFareWithDiscount(ticket));
+		assertEquals((duration * Fare.BIKE_RATE_PER_HOUR) - (duration * Fare.BIKE_RATE_PER_HOUR * 0.05), ticket.getPrice());
 	}
 }
