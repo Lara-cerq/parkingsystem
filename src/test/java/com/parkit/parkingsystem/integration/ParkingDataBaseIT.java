@@ -82,16 +82,13 @@ public class ParkingDataBaseIT {
 		// test that ticket saved in DB
 		assertNotNull(ticket);
 	}
-
+	
 	@Test
 	public void testParkingLotExit() {
 		testParkingACar();
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.processExitingVehicle();
 		Ticket ticket= ticketDAO.getTicket("ABCDEF");
-		// verify that fare is savend in DB
-		double price= ticket.getPrice();
-		assertEquals(1.5, Math.round(price*100)/100.0);
 		// verify that outTime is saved in DB
 		SimpleDateFormat dateFormat = new SimpleDateFormat();
 		Date date= new Date();		
@@ -99,6 +96,17 @@ public class ParkingDataBaseIT {
 		Date outTime=ticket.getOutTime();
 		String outTimeAfter= dateFormat.format(outTime);
 		assertEquals(outTimebefore, outTimeAfter);
+	}
+
+	@Test
+	public void testPriceParkingLotExit() {
+		testParkingACar();
+		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+		parkingService.processExitingVehicle();
+		Ticket ticket= ticketDAO.getTicket("ABCDEF");
+		// verify that fare is savend in DB
+		double price= ticket.getPrice();
+		assertEquals(1.5, Math.round(price*100)/100.0);
 	}
 	
 	@Test
@@ -108,7 +116,6 @@ public class ParkingDataBaseIT {
 		parkingService.processExitingVehicle();
 		parkingService.processIncomingVehicle();
 		int nb= ticketDAO.countVehiculeReg("ABCDEF");
-		
 		assertEquals(2, nb);
 	}
 

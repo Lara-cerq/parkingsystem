@@ -2,6 +2,7 @@ package com.parkit.parkingsystem;
 
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.constants.ParkingType;
+import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.FareCalculatorService;
@@ -17,17 +18,18 @@ public class FareCalculatorServiceTest {
 
 	private static FareCalculatorService fareCalculatorService;
 	private Ticket ticket;
-	private Ticket ticket2;
+	private static DataBasePrepareService dataBasePrepareService;
 
 	@BeforeAll
 	private static void setUp() {
 		fareCalculatorService = new FareCalculatorService();
+		dataBasePrepareService = new DataBasePrepareService();
+		dataBasePrepareService.addDataBaseEntries();
 	}
 
 	@BeforeEach
 	private void setUpPerTest() {
 		ticket = new Ticket();
-		ticket2= new Ticket();
 	}
 
 	@Test
@@ -176,20 +178,13 @@ public class FareCalculatorServiceTest {
 		inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));
 		Date outTime = new Date();
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
-		ParkingSpot parkingSpot2 = new ParkingSpot(2, ParkingType.CAR, false);
 		ticket.setInTime(inTime);
 		ticket.setOutTime(outTime);
 		ticket.setParkingSpot(parkingSpot);
-		ticket2.setInTime(inTime);
-		ticket2.setOutTime(outTime);
-		ticket2.setParkingSpot(parkingSpot2);
 		double duration = (outTime.getTime() - inTime.getTime()) / (1000 * 60 * 60.0);
-		ticket2.setPrice(fareCalculatorService.calculateFareWithDiscount(ticket2));
-//		fareCalculatorService.calculateFare(ticket);
-			assertEquals((duration * Fare.CAR_RATE_PER_HOUR) - (duration * Fare.CAR_RATE_PER_HOUR * 0.05), ticket2.getPrice()); 
+		ticket.setPrice(fareCalculatorService.calculateFareWithDiscount(ticket));
+			assertEquals((duration * Fare.CAR_RATE_PER_HOUR) - (duration * Fare.CAR_RATE_PER_HOUR * 0.05), ticket.getPrice()); 
 		}
-//		assertEquals((1 * Fare.CAR_RATE_PER_HOUR) - (1 * Fare.CAR_RATE_PER_HOUR * 0.05), ticket.getPrice()); 
-
 	@Test
 	public void calculateFareBikeRecurringCustomer() {
 		Date inTime = new Date();
