@@ -63,8 +63,9 @@ public class ParkingDataBaseIT {
 																			// disponible
 		parkingService.processIncomingVehicle();
         Ticket ticket= ticketDAO.getTicket("ABCDEF");
+        parkingService.processExitingVehicle();
 		int after = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
-		assertEquals(before, after - 1); //3 places de parking pouvant etre occupées
+		assertEquals(before, after); //3 places de parking pouvant etre occupées
 		//test that ticket is saved in DB
 		assertNotNull(ticket);
 	}
@@ -96,6 +97,7 @@ public class ParkingDataBaseIT {
 		Date outTime=ticket.getOutTime();
 		String outTimeAfter= dateFormat.format(outTime);
 		assertEquals(outTimebefore, outTimeAfter);
+		assertNotNull(ticket.getOutTime());
 	}
 
 	@Test

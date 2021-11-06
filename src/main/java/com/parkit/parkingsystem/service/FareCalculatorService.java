@@ -73,8 +73,6 @@ public class FareCalculatorService {
 			if (duration > 0.5) {
 				if (customerRecurring(ticket) == true) {
 					ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR - (duration * Fare.CAR_RATE_PER_HOUR * 0.05));
-					System.out.println(customerRecurring(ticket));
-					System.out.println("Congratulations! You are a recurring customer, so you have a discount of 5%!!");
 					return ticket.getPrice();
 				} else {
 					ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
@@ -90,8 +88,6 @@ public class FareCalculatorService {
 			if (duration > 0.5) {
 				if (customerRecurring(ticket) == true) {
 					ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR - (duration * Fare.BIKE_RATE_PER_HOUR * 0.05));
-					System.out.println(customerRecurring(ticket));
-					System.out.println("Congratulations! You are a recurring customer, so you have a discount of 5%!!");
 					return ticket.getPrice();
 			} else {
 				ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
