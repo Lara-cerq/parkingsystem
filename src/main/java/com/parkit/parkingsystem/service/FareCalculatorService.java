@@ -7,7 +7,6 @@ import com.parkit.parkingsystem.model.Ticket;
 public class FareCalculatorService {
 
 	public static boolean customerRecurring(Ticket ticket) {
-//		Ticket ticket = new Ticket();
 		TicketDAO ticketDAO = new TicketDAO();
 		int numberOfTimes = ticketDAO.countVehiculeReg("ABCDEF");
 		if (numberOfTimes > 1) {
@@ -28,8 +27,6 @@ public class FareCalculatorService {
 
 		double duration = (outHour - inHour) / (1000 * 60 * 60.0);
 
-//		TicketDAO ticketDAO = new TicketDAO();
-
 		switch (ticket.getParkingSpot().getParkingType()) {
 		case CAR: {
 			if (duration > 0.5) {
@@ -39,8 +36,6 @@ public class FareCalculatorService {
 				ticket.setPrice(0);
 				return ticket.getPrice();
 			}
-
-//			break;
 		}
 		case BIKE: {
 			if (duration > 0.5) {
@@ -89,16 +84,14 @@ public class FareCalculatorService {
 				if (customerRecurring(ticket) == true) {
 					ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR - (duration * Fare.BIKE_RATE_PER_HOUR * 0.05));
 					return ticket.getPrice();
-			} else {
-				ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
-				return ticket.getPrice();
+				} else {
+					ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
+					return ticket.getPrice();
 				}
 			} else {
 				ticket.setPrice(0);
 				return ticket.getPrice();
 			}
-//
-//		break;
 		}
 
 		default:

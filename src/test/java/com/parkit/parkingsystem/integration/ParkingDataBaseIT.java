@@ -23,7 +23,6 @@ import static org.mockito.Mockito.when;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
 @ExtendWith(MockitoExtension.class)
 public class ParkingDataBaseIT {
 
@@ -62,40 +61,40 @@ public class ParkingDataBaseIT {
 		int before = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR); // -> donne le numero/nombre de place
 																			// disponible
 		parkingService.processIncomingVehicle();
-        Ticket ticket= ticketDAO.getTicket("ABCDEF");
-        parkingService.processExitingVehicle();
+		Ticket ticket = ticketDAO.getTicket("ABCDEF");
+		parkingService.processExitingVehicle();
 		int after = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
-		assertEquals(before, after); //3 places de parking pouvant etre occupées
-		//test that ticket is saved in DB
+		assertEquals(before, after); // 3 places de parking pouvant etre occupées
+		// test that ticket is saved in DB
 		assertNotNull(ticket);
 	}
-	
+
 	@Test
 	public void testParkingABike() {
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		int before = parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE); // -> donne le numero/nombre de place
 																			// disponible
 		parkingService.processIncomingVehicle();
-        Ticket ticket= ticketDAO.getTicket("ABCDEF");
+		Ticket ticket = ticketDAO.getTicket("ABCDEF");
 		int after = parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE);
 		assertEquals(before, after); // -> pour bike : assertEquals(before, after); car il y a deux places libres
-											// pouvant etre occupées
+										// pouvant etre occupées
 		// test that ticket saved in DB
 		assertNotNull(ticket);
 	}
-	
+
 	@Test
 	public void testParkingLotExit() {
 		testParkingACar();
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.processExitingVehicle();
-		Ticket ticket= ticketDAO.getTicket("ABCDEF");
+		Ticket ticket = ticketDAO.getTicket("ABCDEF");
 		// verify that outTime is saved in DB
 		SimpleDateFormat dateFormat = new SimpleDateFormat();
-		Date date= new Date();		
-		String outTimebefore= dateFormat.format(date);
-		Date outTime=ticket.getOutTime();
-		String outTimeAfter= dateFormat.format(outTime);
+		Date date = new Date();
+		String outTimebefore = dateFormat.format(date);
+		Date outTime = ticket.getOutTime();
+		String outTimeAfter = dateFormat.format(outTime);
 		assertEquals(outTimebefore, outTimeAfter);
 		assertNotNull(ticket.getOutTime());
 	}
@@ -105,19 +104,19 @@ public class ParkingDataBaseIT {
 		testParkingACar();
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.processExitingVehicle();
-		Ticket ticket= ticketDAO.getTicket("ABCDEF");
+		Ticket ticket = ticketDAO.getTicket("ABCDEF");
 		// verify that fare is savend in DB
-		double price= ticket.getPrice();
-		assertEquals(1.5, Math.round(price*100)/100.0);
+		double price = ticket.getPrice();
+		assertEquals(1.5, Math.round(price * 100) / 100.0);
 	}
-	
+
 	@Test
 	public void testReccurringCustomer() {
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		parkingService.processIncomingVehicle();	//insertion de vehicule
+		parkingService.processIncomingVehicle(); // insertion de vehicule
 		parkingService.processExitingVehicle();
 		parkingService.processIncomingVehicle();
-		int nb= ticketDAO.countVehiculeReg("ABCDEF");
+		int nb = ticketDAO.countVehiculeReg("ABCDEF");
 		assertEquals(2, nb);
 	}
 
