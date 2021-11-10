@@ -119,5 +119,4 @@ public class ParkingDataBaseIT {
 		int nb = ticketDAO.countVehiculeReg("ABCDEF");
 		assertEquals(2, nb);
 	}
-
 }

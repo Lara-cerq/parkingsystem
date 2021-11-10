@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.Date;
 
 public class TicketDAO {
 
@@ -30,9 +31,11 @@ public class TicketDAO {
 			ps.setString(2, ticket.getVehicleRegNumber());
 			ps.setDouble(3, ticket.getPrice());
 			ps.setTimestamp(4, new Timestamp(ticket.getInTime().getTime()));
-			ps.setTimestamp(5, (ticket.getOutTime() == null) ? null : (new Timestamp(ticket.getOutTime().getTime())));
+			ps.setTimestamp(5,
+					(ticket.getOutTime() == new Date(0)) ? null : (new Timestamp(ticket.getOutTime().getTime())));
 
 			ps.executeUpdate();
+			dataBaseConfig.closePreparedStatement(ps);
 		} catch (Exception ex) {
 			logger.error("Error fetching next available slot", ex);
 		} finally {
@@ -47,7 +50,6 @@ public class TicketDAO {
 		try {
 			con = dataBaseConfig.getConnection();
 			PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET);
-			// ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
 			ps.setString(1, vehicleRegNumber);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
@@ -79,6 +81,7 @@ public class TicketDAO {
 			ps.setTimestamp(2, new Timestamp(ticket.getOutTime().getTime()));
 			ps.setInt(3, ticket.getId());
 			ps.execute();
+			dataBaseConfig.closePreparedStatement(ps);
 			return true;
 		} catch (Exception ex) {
 			logger.error("Error saving ticket info", ex);
@@ -96,9 +99,8 @@ public class TicketDAO {
 			PreparedStatement ps = con.prepareStatement(DBConstants.COUNT_VEHICULEREG);
 			ps.setString(1, vehicleRegNumber);
 			ResultSet rs = ps.executeQuery();
-	    	rs.next();
-	    	numberOfTimes=rs.getInt(1);
-	    	
+			rs.next();
+			numberOfTimes = rs.getInt(1);
 			dataBaseConfig.closeResultSet(rs);
 			dataBaseConfig.closePreparedStatement(ps);
 		} catch (Exception ex) {
