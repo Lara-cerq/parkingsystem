@@ -40,7 +40,7 @@ public class ParkingService {
 				parkingSpotDAO.updateParking(parkingSpot);// allot this parking space and mark it's availability as
 															// false
 				Date inTime = new Date();
-				inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));
+				inTime.setTime(System.currentTimeMillis());
 				Ticket ticket = new Ticket();
 				ticket.setParkingSpot(parkingSpot);
 				ticket.setVehicleRegNumber(vehicleRegNumber);

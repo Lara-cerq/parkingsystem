@@ -1,5 +1,11 @@
 package com.parkit.parkingsystem.service;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.model.Ticket;
@@ -21,11 +27,15 @@ public class FareCalculatorService {
 		if ((ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime()))) {
 			throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
 		}
-
+		LocalDateTime localDateIn=this.convertToLocalDateViaInstant(ticket.getInTime());
+		LocalDateTime localDateOut=this.convertToLocalDateViaInstant(ticket.getOutTime());
+		
+		Duration durationBetween = Duration.between(localDateIn, localDateOut);
+		
 		long inHour = ticket.getInTime().getTime();
 		long outHour = ticket.getOutTime().getTime();
 
-		double duration = (outHour - inHour) / (1000 * 60 * 60.0);
+		double duration = durationBetween.toMinutes() / 60.0;
 
 		switch (ticket.getParkingSpot().getParkingType()) {
 		case CAR: {
@@ -58,10 +68,15 @@ public class FareCalculatorService {
 			throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
 		}
 
+		LocalDateTime localDateIn=this.convertToLocalDateViaInstant(ticket.getInTime());
+		LocalDateTime localDateOut=this.convertToLocalDateViaInstant(ticket.getOutTime());
+		
+		Duration durationBetween = Duration.between(localDateIn, localDateOut);
+		
 		long inHour = ticket.getInTime().getTime();
 		long outHour = ticket.getOutTime().getTime();
 
-		double duration = (outHour - inHour) / (1000 * 60 * 60.0);
+		double duration = durationBetween.toMinutes() / 60.0;
 
 		switch (ticket.getParkingSpot().getParkingType()) {
 		case CAR: {
@@ -97,5 +112,11 @@ public class FareCalculatorService {
 		default:
 			throw new IllegalArgumentException("Unkown Parking Type");
 		}
+	}
+	
+	public LocalDateTime convertToLocalDateViaInstant(Date dateToConvert) {
+	    return dateToConvert.toInstant()
+	      .atZone(ZoneId.systemDefault())
+	      .toLocalDateTime();
 	}
 }

@@ -8,6 +8,8 @@ import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
+
+import org.apache.commons.lang.time.DateUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,17 +58,14 @@ public class ParkingDataBaseIT {
 	}
 
 	@Test
-	public void testParkingACar() {
+	public void testParkingACar() throws InterruptedException {
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		int before = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR); // -> donne le numero/nombre de place
-																			// disponible
 		parkingService.processIncomingVehicle();
 		Ticket ticket = ticketDAO.getTicket("ABCDEF");
-		parkingService.processExitingVehicle();
-		int after = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
-		assertEquals(before, after); // 3 places de parking pouvant etre occupées
+		Thread.sleep(2000);
 		// test that ticket is saved in DB
 		assertNotNull(ticket);
+		assertNotNull(ticket.getInTime());
 	}
 
 	@Test
@@ -84,7 +83,7 @@ public class ParkingDataBaseIT {
 	}
 
 	@Test
-	public void testParkingLotExit() {
+	public void testParkingLotExit() throws InterruptedException {
 		testParkingACar();
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.processExitingVehicle();
@@ -100,14 +99,13 @@ public class ParkingDataBaseIT {
 	}
 
 	@Test
-	public void testPriceParkingLotExit() {
+	public void testPriceParkingLotExit() throws InterruptedException{
 		testParkingACar();
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.processExitingVehicle();
 		Ticket ticket = ticketDAO.getTicket("ABCDEF");
-		// verify that fare is savend in DB
-		double price = ticket.getPrice();
-		assertEquals(1.5, Math.round(price * 100) / 100.0);
+		assertEquals(0.0, Math.round(ticket.getPrice() * 100) / 100.0);
+		assertNotNull(ticket.getOutTime());
 	}
 
 	@Test
